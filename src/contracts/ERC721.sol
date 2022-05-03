@@ -5,6 +5,12 @@ contract ERC721 {
     mapping(uint256 => address) private _tokenOwner;
     mapping(address => uint256) private _ownedTokensCount;
 
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
+
     function _exists(uint256 tokenId) internal view returns (bool) {
         address owner = _tokenOwner[tokenId];
 
@@ -17,5 +23,7 @@ contract ERC721 {
 
         _tokenOwner[tokenId] = to;
         _ownedTokensCount[to]++;
+
+        emit Transfer(address(0), to, tokenId);
     }
 }
