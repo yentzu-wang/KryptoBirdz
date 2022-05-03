@@ -2,7 +2,7 @@
   "name": "nft-marketplace",
   "version": "0.1.0",
   "description": "An NFT Marketplace",
-  "author": "clarionnorth@gmail.com",
+  "author": "Frank Wang",
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
     "@openzeppelin/contracts": "^4.3.1",
@@ -29,15 +29,19 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "eject": "react-scripts eject",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|json)\""
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.6",
+    "truffle-plugin-verify": "^0.5.20"
+  }
 }
