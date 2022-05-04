@@ -7,7 +7,7 @@ contract KryptoBirdz is ERC721Connector {
     string[] public kryptoBirdz;
     mapping(string => bool) private _kryptoBirdzExists;
 
-    constructor() ERC721Connector("KryptoBirdz", "KBIRDS") {}
+    constructor() ERC721Connector("KryptoBirdz", "KBIRDZ") {}
 
     function mint(string calldata _kryptoBird) public {
         require(
