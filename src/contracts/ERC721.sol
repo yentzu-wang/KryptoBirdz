@@ -18,7 +18,7 @@ contract ERC721 {
         return _ownedTokensCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) external view returns (address) {
+    function ownerOf(uint256 _tokenId) public view returns (address) {
         address owner = _tokenOwner[_tokenId];
         require(owner != address(0), "Owner query for zero address");
 
@@ -45,5 +45,12 @@ contract ERC721 {
         address _from,
         address _to,
         uint256 _tokenId
-    ) external payable {}
+    ) external payable {
+        require(_to != address(0), "Transfer to the zero address");
+        require(ownerOf(_tokenId) == _from, "Address does not own the token");
+
+        _ownedTokensCount[_from] -= 1;
+        _ownedTokensCount[_to] += 1;
+        _tokenOwner[_tokenId] = _to;
+    }
 }
