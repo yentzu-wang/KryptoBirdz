@@ -2,22 +2,12 @@
 pragma solidity >=0.8.0;
 
 import "./ERC165.sol";
+import "./interfaces/IERC721.sol";
 
-contract ERC721 is ERC165 {
+contract ERC721 is ERC165, IERC721 {
     mapping(uint256 => address) private _tokenOwner;
     mapping(address => uint256) private _ownedTokensCount;
     mapping(uint256 => address) private _tokenApprovals;
-
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-    event Approval(
-        address indexed owner,
-        address indexed approved,
-        uint256 indexed tokenId
-    );
 
     function balanceOf(address _owner) public view returns (uint256) {
         require(_owner != address(0), "Owner query for zero address");
@@ -67,13 +57,13 @@ contract ERC721 is ERC165 {
         address _from,
         address _to,
         uint256 _tokenId
-    ) public {
+    ) external payable {
         isApprovedOrOwner(msg.sender, _tokenId);
 
         _transferFrom(_from, _to, _tokenId);
     }
 
-    function approve(address _to, uint256 tokenId) public {
+    function approve(address _to, uint256 tokenId) external payable {
         address owner = ownerOf(tokenId);
 
         require(_to != owner, "Approval to the same address");
