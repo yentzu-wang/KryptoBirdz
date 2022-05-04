@@ -11,6 +11,11 @@ contract ERC721 {
         address indexed to,
         uint256 indexed tokenId
     );
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
 
     function balanceOf(address _owner) public view returns (uint256) {
         require(_owner != address(0), "Owner query for zero address");
@@ -41,16 +46,52 @@ contract ERC721 {
         emit Transfer(address(0), to, tokenId);
     }
 
-    function transferFrom(
+    function _transferFrom(
         address _from,
         address _to,
         uint256 _tokenId
-    ) external payable {
+    ) internal {
         require(_to != address(0), "Transfer to the zero address");
         require(ownerOf(_tokenId) == _from, "Address does not own the token");
 
         _ownedTokensCount[_from] -= 1;
         _ownedTokensCount[_to] += 1;
         _tokenOwner[_tokenId] = _to;
+
+        emit Transfer(_from, _to, _tokenId);
     }
+
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _tokenId
+    ) public {
+        isApprovedOrOwner(msg.sender, _tokenId);
+
+        _transferFrom(_from, _to, _tokenId);
+    }
+
+    function approve(address _to, uint256 tokenId) public {
+        address owner = ownerOf(tokenId);
+
+        require(_to != owner, "Approval to the same address");
+        require(msg.sender == owner, "Not allow");
+
+        _tokenApprovals[tokenId] = _to;
+
+        emit Approval(owner, _to, tokenId);
+    }
+
+    function isApprovedOrOwner(address spender, uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        require(_exists(tokenId), "ERC721: non-existent token");
+
+        address owner = ownerOf(tokenId);
+        return spender == owner || getApproved(tokenId) == spender;
+    }
+
+    function getApproved(uint256 tokenId) public view returns (address) {}
 }
