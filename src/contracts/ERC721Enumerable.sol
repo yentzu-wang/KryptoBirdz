@@ -10,6 +10,16 @@ contract ERC721Enumerable is ERC721, IERC721Enumerable {
     mapping(address => uint256[]) private _ownedTokens;
     mapping(uint256 => uint256) private _ownedTokensIndex;
 
+    constructor() {
+        _registerInterface(
+            bytes4(
+                keccak256("totalSupply()") ^
+                    keccak256("tokenByIndex(uint256)") ^
+                    keccak256("tokenOfOwnerByIndex(address,uint256)")
+            )
+        );
+    }
+
     function _mint(address to, uint256 tokenId) internal override(ERC721) {
         super._mint(to, tokenId);
 
