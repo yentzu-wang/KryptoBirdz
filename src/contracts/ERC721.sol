@@ -4,6 +4,7 @@ pragma solidity >=0.8.0;
 contract ERC721 {
     mapping(uint256 => address) private _tokenOwner;
     mapping(address => uint256) private _ownedTokensCount;
+    mapping(uint256 => address) private _tokenApprovals;
 
     event Transfer(
         address indexed from,
@@ -39,4 +40,10 @@ contract ERC721 {
 
         emit Transfer(address(0), to, tokenId);
     }
+
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _tokenId
+    ) external payable {}
 }
