@@ -25,8 +25,6 @@ const App = () => {
     }
   )
 
-  console.log(state)
-
   useEffect(() => {
     ;(async () => {
       await loadWeb3()
