@@ -16,4 +16,27 @@ library SafeMath {
 
         return r;
     }
+
+    function mul(uint256 x, uint256 y) internal pure returns (uint256) {
+        if (x == 0 || y == 0) {
+            return 0;
+        }
+
+        uint256 r = x * y;
+        require(r / x == y, "SafeMath: Multiply overflow");
+
+        return r;
+    }
+
+    function devide(uint256 x, uint256 y) internal pure returns (uint256) {
+        require(y > 0, "SafeMath: devide by 0");
+
+        uint256 r = x / y;
+        return r;
+    }
+
+    function mod(uint256 x, uint256 y) internal pure returns (uint256) {
+        require(y != 0, "SafeMath: modulo by 0");
+        return x % y;
+    }
 }
