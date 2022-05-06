@@ -9,8 +9,7 @@ const App = () => {
   useEffect(() => {
     ;(async () => {
       await loadWeb3()
-      const accounts = await loadBlockChainData()
-      setAccounts(accounts)
+      await loadBlockChainData()
     })()
   }, [])
 
@@ -27,8 +26,17 @@ const App = () => {
 
   async function loadBlockChainData() {
     const accounts = await window.web3.eth.getAccounts()
+    setAccounts(accounts)
 
-    return accounts
+    const networkId = await window.web3.eth.net.getId()
+    const netWorkData = KryptoBirdz.networks[networkId]
+
+    if (netWorkData) {
+      const abi = KryptoBirdz.abi
+      const address = netWorkData.address
+      const contract = new window.web3.eth.Contract(abi, address)
+      console.log(contract)
+    }
   }
 
   return (
