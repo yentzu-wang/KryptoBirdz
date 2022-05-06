@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useReducer } from "react"
 import Web3 from "web3"
 import detectEthereumProvider from "@metamask/detect-provider"
 import KryptoBirdz from "../abis/KryptoBirdz.json"
 
 const App = () => {
-  const [accounts, setAccounts] = useState([])
+  const [state, setState] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    {
+      accounts: [],
+      contract: null,
+      totalSupply: 0,
+      kryptoBirdz: [],
+    }
+  )
+
+  console.log(state)
 
   useEffect(() => {
     ;(async () => {
@@ -26,7 +36,7 @@ const App = () => {
 
   async function loadBlockChainData() {
     const accounts = await window.web3.eth.getAccounts()
-    setAccounts(accounts)
+    setState({ accounts })
 
     const networkId = await window.web3.eth.net.getId()
     const netWorkData = KryptoBirdz.networks[networkId]
@@ -35,8 +45,27 @@ const App = () => {
       const abi = KryptoBirdz.abi
       const address = netWorkData.address
       const contract = new window.web3.eth.Contract(abi, address)
-      console.log(contract)
+      setState({ contract })
+
+      const totalSupply = await contract.methods.totalSupply().call()
+
+      setState({ totalSupply })
+      for (let i = 1; i <= totalSupply; i++) {
+        const kryptoBird = await contract.methods.kryptoBirdz(i - 1).call()
+        setState({ kryptoBirdz: [...state.kryptoBirdz, kryptoBird] })
+      }
+    } else {
+      window.alert("Smart contract not deployed")
     }
+  }
+
+  async function mint(kryptoBird) {
+    state.contract.methods
+      .mint(kryptoBird)
+      .send({ from: state.accounts[0] })
+      .once("receipt", (receipt) => {
+        setState({ kryptoBirdz: [...state.kryptoBirdz, kryptoBird] })
+      })
   }
 
   return (
@@ -50,11 +79,19 @@ const App = () => {
         </div>
         <ul className="navbar-nav px-3">
           <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
-            <small className="text-white">{accounts[0]}</small>
+            <small className="text-white">{state.accounts[0]}</small>
           </li>
         </ul>
       </nav>
-      <h1>NFT Marketplace</h1>
+      <div className="container-fluid mt-1">
+        <div className="row">
+          <main role="main" className="col-lg-12 d-flex text-center">
+            <div className="content mr-auto ml-auto" style={{ opacity: "0.8" }}>
+              <h1 style={{ color: "white" }}>KryptoBirdz - NFT Marketplace</h1>
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   )
 }
